@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 
 const app = express();
@@ -32,14 +32,49 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result)
         })
-        
+
+
+
+        app.get('/MyCraft/:email', async (req, res) => {
+
+            const result = await craftsCollection.find({ email: req.params.email }).toArray()
+            res.send(result)
+            // console.log(req.params.email);
+        })
+
+
+        app.get('/singleCraft/:id', async (req, res) => {
+            const result = await craftsCollection.findOne({ _id: new ObjectId(req.params.id), })
+            // console.log(result);
+            res.send(result)
+        })
+
 
         app.post('/addcraft', async (req, res) => {
             const newCraft = req.body;
-            console.log(newCraft);
+            // console.log(newCraft);
             const result = await craftsCollection.insertOne(newCraft)
             res.send(result)
-            
+
+        })
+
+        app.put("/updateCraft/:id", async (req, res) => {
+            const query = { _id: new ObjectId(req.params.id) }
+            const data = {
+                $set: {
+                    price: req.body.price,
+                    rating: req.body.rating
+                }
+            }
+            const result = await craftsCollection.updateOne(query, data)
+            // console.log(result);
+            res.send(result)
+        })
+
+        app.delete('/MyCraft/:id', async (req, res) => {
+            const result = await craftsCollection.deleteOne({ _id: new ObjectId(req.params.id), })
+            // console.log(result);
+            res.send(result)
         })
 
         await client.db("admin").command({ ping: 1 });
