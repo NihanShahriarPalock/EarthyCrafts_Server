@@ -87,14 +87,12 @@ async function run() {
 
                 }
             }
-            const result = await craftsCollection.updateOne(query, data)
-            
+            const result = await craftsCollection.updateOne(query, data)           
             res.send(result)
         })
 
         app.delete('/MyCraft/:id', async (req, res) => {
-            const result = await craftsCollection.deleteOne({ _id: new ObjectId(req.params.id), })
-            
+            const result = await craftsCollection.deleteOne({ _id: new ObjectId(req.params.id), })           
             res.send(result)
         })
 
